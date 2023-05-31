@@ -2,18 +2,31 @@
 
 //-GLOBAL-VARIABLES---------------------------------------------------------------------------------
 
-Account accounts[MAX_N_ACCOUNTS];
-int n_accounts; // number of accounts
-BusRoute routes[MAX_N_ROUTES];
-int n_routes; // number of routes
-Account current_account {};
+Account accounts[MAX_N_ACCOUNTS] {};    // array of registered accounts
+int n_accounts = 0;                     // number of accounts
+BusRoute routes[MAX_N_ROUTES] {};       // array of registered bus routes
+int n_routes = 0;                       // number of routes
+Account current_account {};             // current authorized account in the system
 
 //-MAIN---------------------------------------------------------------------------------------------
 
+/**
+ *  Main function of the program consists of several steps:
+ *  (1) {@code preparation}, (2) {@code account enter}, (3) {@code account actions}.
+ *  But there is one more step: some definitions in the {@code BusStation
+ *  @param  argc    number of the command line arguments
+ *  @param  argv    command line arguments
+ *  @return {@code EXIT_SUCCESS} in case of normal program behaviour,
+ *          otherwise other int value (e.g. {@code EXIT_FAILURE})
+ */
 int main(int argc, const char * argv[])
 {
     preparation();
-    account_enter();
-    account_actions();
-    return 0;
+    bool quit = false;
+    if (!account_enter(quit))
+        return EXIT_FAILURE;
+    if (!quit && !account_actions())
+        return EXIT_FAILURE;
+    cout << "That was pretty good! C u ;-)\n";
+    return EXIT_SUCCESS;
 }

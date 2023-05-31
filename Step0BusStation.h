@@ -1,6 +1,6 @@
-//  describes the basic logic of the programm
-#ifndef BusStation_h
-#define BusStation_h
+// step#0: definitions
+#ifndef Step0BusStation_h
+#define Step0BusStation_h
 
 #include <cstdio>
 #include <fstream>
@@ -10,24 +10,21 @@
 #include <string>
 #include <string.h>
 
-using std::string;
-using std::cout;
 using std::cin;
-using std::ofstream;
+using std::cout;
+using std::endl;
 using std::ifstream;
 using std::ios;
-using std::endl;
+using std::ofstream;
+using std::string;
 using std::to_string;
-using std::set;
-using std::iterator;
-using std::pair;
 
-//-Constants----------------------------------------------------------------------------------------
+//-CONSTANTS----------------------------------------------------------------------------------------
 
-const char DELIMITER = ';';
-const int MAX_INPUT_SIZE = (1 << 14) + ((1 << 14) - 1);
-const int MAX_N_ACCOUNTS = 128; // max number of accounts; 128 = 0x80
-const int MAX_N_ROUTES = 128; // max number of routes
+const char DELIMITER = ';';                             // .csv delimiter
+const int MAX_INPUT_SIZE = (1 << 14) + ((1 << 14) - 1); // 32767 = 0x7FFF
+const int MAX_N_ACCOUNTS = MAX_INPUT_SIZE;              // max number of accounts
+const int MAX_N_ROUTES = MAX_INPUT_SIZE;                // max number of routes
 const string FILE_OF_ACCOUNTS = "accounts.csv";
 const string FILE_OF_ROUTES = "bus_routes.csv";
 
@@ -39,14 +36,13 @@ enum BusType { SMALL, MEDIUM, LARGE };
 
 //-STRUCTURES---------------------------------------------------------------------------------------
 
-/** A simple structure of date and time. */
-struct DateTime
+struct DateTime // a simple structure of date and time
 {
-    int year;
-    int month;
-    int day;
-    int hour;
-    int minute;
+    int year = 0;
+    int month = 0;
+    int day = 0;
+    int hour = 0;
+    int minute = 0;
     inline string as_string() const
     {
         return to_string(year) + "-" + to_string(month) + "-" + to_string(day) + "t" +
@@ -54,12 +50,11 @@ struct DateTime
     }
 };
 
-/** An account for a USER or an ADMIN. */
-struct Account
+struct Account // USER or an ADMIN
 {
-    string login; // identifier
-    AccountType type;
-    string password;
+    string login {}; // uniq identifier
+    AccountType type {};
+    string password {};
     inline bool operator== (const Account &acc) const
     {
         return login == acc.login;
@@ -81,16 +76,15 @@ struct Account
     }
 };
 
-/** A bus route structure according to the task. */
-struct BusRoute {
-    int route_number; // identifier
-    BusType type;
-    string destination;
-    DateTime departure;
-    DateTime arrival;
-    int ticket_cost_BYN; // Belarusian rubles
-    int n_tickets;
-    int tickets_left;
+struct BusRoute { // bus route structure according to the task
+    int route_number = 0;       // uniq identifier
+    BusType type {};
+    string destination {};
+    DateTime departure {};
+    DateTime arrival {};
+    int ticket_cost_BYN = 0;    // in Belarusian rubles
+    int n_tickets = 0;
+    int tickets_left = 0;
     inline bool operator== (const BusRoute &acc) const
     {
         return route_number == acc.route_number;
@@ -119,8 +113,28 @@ struct BusRoute {
 
 //-FUNCTIONS----------------------------------------------------------------------------------------
 
-void preparation();
-void account_enter(); // menu
-void account_actions();
+/**
+ *  Step#1 of the program to read or generate
+ *  the {@code accounts} and the {@code routes}.
+ *  @return {@code false} if an I/O error occurs, otherwise {@code true}
+ */
+bool preparation();
 
-#endif /* BusStation_h */
+/**
+ *  Step#2 of the program to define the {@code current_account};
+ *  provides registering or authorizing of an account.
+ *  @param  quit    an indicator to stop the program
+ *  @return {@code false} if an I/O error occurs, otherwise {@code true}
+ */
+bool account_enter(bool &quit);
+
+/**
+ *  Step#3 of the program to perform account acctions
+ *  by a loop until the {@code quit} indicator is not true;
+ *  USER-AND-ADMIN-ACTOINS: view, search, sort;
+ *  ADMIN-ONLY-ACTIONS: add, edit, remove.
+ *  @return {@code false} if an I/O error occurs, otherwise {@code true}
+ */
+bool account_actions();
+
+#endif /* Step0BusStation_h */

@@ -15,7 +15,7 @@
  *  @param  delimiter a character to stop the filling which will be skipped
  *  @return false if the {@code buffer} is empty, otherwise true
  */
-inline bool fill_buffer(char *buffer, const char *line, int &line_ind, const char &delimiter)
+bool fill_buffer(char *buffer, const char *line, int &line_ind, const char &delimiter)
 {
     int i = 0;
     for (; line[line_ind] != '\0' && line[line_ind] != delimiter; ++i, ++line_ind)
@@ -38,7 +38,7 @@ inline bool fill_buffer(char *buffer, const char *line, int &line_ind, const cha
  *          will be set after the last filled character
  *  @return false if the {@code buffer} is empty, otherwise true
  */
-inline bool fill_buffer(char *buffer, const char *line, int &line_ind)
+bool fill_buffer(char *buffer, const char *line, int &line_ind)
 {
     int i = 0;
     for (; line[line_ind] != '\0'; ++i, ++line_ind)
@@ -122,27 +122,27 @@ bool parse_date_time(DateTime &date_time, const char *line)
     if (!fill_buffer(buffer, line, line_ind, '-'))
         return false;
     int year = -1;
-    if (!parse_int(year, buffer))
+    if (!parse_int(year, buffer) || year < 0)
         return false;
     if (!fill_buffer(buffer, line, line_ind, '-'))
         return false;
     int month = -1;
-    if (!parse_int(month, buffer))
+    if (!parse_int(month, buffer) || 12 < month || month < 1)
         return false;
     if (!fill_buffer(buffer, line, line_ind, 't'))
         return false;
     int day = -1;
-    if (!parse_int(day, buffer))
+    if (!parse_int(day, buffer) || 31 < day || day < 1)
         return false;
     if (!fill_buffer(buffer, line, line_ind, '-'))
         return false;
     int hour = -1;
-    if (!parse_int(hour, buffer))
+    if (!parse_int(hour, buffer) || 23 < hour || hour < 0)
         return false;
     if (!fill_buffer(buffer, line, line_ind))
         return false;
     int minute = -1;
-    if (!parse_int(minute, buffer))
+    if (!parse_int(minute, buffer) || 59 < minute || minute < 0)
         return false;
     date_time = { year, month, day, hour, minute };
     return true;
@@ -174,7 +174,7 @@ bool parse_route(BusRoute &route, const char *line)
     if (!fill_buffer(buffer, line, line_ind, DELIMITER))
         return false;
     int route_number = -1;
-    if (!parse_int(route_number, buffer))
+    if (!parse_int(route_number, buffer) || route_number < 0)
         return false;
     if (!fill_buffer(buffer, line, line_ind, DELIMITER))
         return false;
@@ -197,17 +197,17 @@ bool parse_route(BusRoute &route, const char *line)
     if (!fill_buffer(buffer, line, line_ind, DELIMITER))
         return false;
     int ticket_cost_BYN = -1;
-    if (!parse_int(ticket_cost_BYN, buffer))
+    if (!parse_int(ticket_cost_BYN, buffer) || ticket_cost_BYN < 0)
         return false;
     if (!fill_buffer(buffer, line, line_ind, DELIMITER))
         return false;
     int n_tickets = -1;
-    if (!parse_int(n_tickets, buffer))
+    if (!parse_int(n_tickets, buffer) || n_tickets < 0)
         return false;
     if (!fill_buffer(buffer, line, line_ind))
         return false;
     int tickets_left = -1;
-    if (!parse_int(tickets_left, buffer))
+    if (!parse_int(tickets_left, buffer) || tickets_left < 0)
         return false;
     route = { route_number, type, destination, departure,
             arrival, ticket_cost_BYN, n_tickets, tickets_left };
@@ -216,30 +216,30 @@ bool parse_route(BusRoute &route, const char *line)
 
 //-WRITERS------------------------------------------------------------------------------------------
 
-void write_account_to_file(const Account &account)
+bool write_account_to_file(const Account &account)
 {
     ofstream fout(FILE_OF_ACCOUNTS, ios::out | ios::app);
     if (!fout.is_open())
     {
-        cout << "Error: the file \"" << FILE_OF_ACCOUNTS << "\" could NOT be openned.\n";
-        cout << "Exiting...\n";
-        exit(EXIT_FAILURE);
+        cout << "The file \"" << FILE_OF_ACCOUNTS << "\" cannot be openned.\n";
+        return false;
     }
     write_account_to_file(account, fout);
     fout.close();
+    return true;
 }
 
-void write_route_to_file(const BusRoute &route)
+bool write_route_to_file(const BusRoute &route)
 {
     ofstream fout(FILE_OF_ROUTES, ios::out | ios::app);
     if (!fout.is_open())
     {
-        cout << "Error: the file \"" << FILE_OF_ROUTES << "\" could NOT be openned.\n";
-        cout << "Exiting...\n";
-        exit(EXIT_FAILURE);
+        cout << "The file \"" << FILE_OF_ROUTES << "\" cannot be openned.\n";
+        return false;
     }
     write_route_to_file(route, fout);
     fout.close();
+    return true;
 }
 
 //-OTHER-FUNCTIONS----------------------------------------------------------------------------------
@@ -253,23 +253,156 @@ int make_choice(const char &from, const char &to, const string &prompt_menu)
     while (cin)
     {
         ch0 = input[0];
-        if (ch0 == '\0' || input[1] != '\0') // if input.length != 1
-        {
-            cout << "The required digit is in the range from "
-                << from << " to " << to << ".\n" << prompt_menu;
+        if (ch0 == '\0' || input[1] != '\0' || to < ch0 || ch0 < from)
+        { // if (input.length != 1) && (ch0 ∉ [from, to])
+            cout << "Required digit is in the range from '"
+                << from << "' to '" << to << "'.\n" << prompt_menu;
             cin.getline(input, MAX_INPUT_SIZE);
             continue;
-        } // if input.length == 1
-        if (from <= ch0 && ch0 <= to)
-            return ch0 - '0'; // all's good
-        cout << "The required digit is in the range from "
-            << from << " to " << to << ".\n" << prompt_menu;
-        cin.getline(input, MAX_INPUT_SIZE);
+        }
+        return ch0 - '0';
     }
-    if (!cin)
+    cout << "System input fails...\n";
+    return -1;
+}
+
+int input_login(string &login)
+{
+    cout << "Login: ";
+    getline(cin, login);
+    if (login.empty())
+        return EMPTY;
+    int ind = NOT_FOUND;
+    for (int i = 0; i < n_accounts; ++i)
     {
-        cout << "Error with the system input stream. Exiting...\n";
-        exit(EXIT_FAILURE);
+        if (accounts[i].login == login)
+        {
+            ind = i;
+            break;
+        }
     }
-    return -1; // fail value
+    return ind;
+}
+
+int input_route_number(int &route_number)
+{
+    char input[MAX_INPUT_SIZE] = "";
+    cout << "Bus route number: ";
+    cin.getline(input, MAX_INPUT_SIZE);
+    if (input[0] == '\0')
+        return EMPTY;
+    if (!parse_int(route_number, input) || route_number < 0)
+        return NOT_POSITIVE;
+    int ind = NOT_FOUND;
+    for (int i = 0; i < n_routes; ++i)
+    {
+        if (routes[i].route_number == route_number)
+        {
+            ind = i;
+            break;
+        }
+    }
+    return ind;
+}
+
+bool input_non_login(const string &login, Account &account)
+{
+    char input[MAX_INPUT_SIZE] = "";
+    cout << "Type (USER or ADMIN): ";
+    cin.getline(input, MAX_INPUT_SIZE);
+    AccountType type {};
+    if (!parse_account_type(type, input))
+    {
+        cout << "Invalid type!\n";
+        return false;
+    }
+    string password {};
+    cout << "Password: ";
+    getline(cin, password);
+    if (password.empty())
+    {
+        cout << "Empty password o_O\n";
+        return false;
+    }
+    account = { login, type, password };
+    return true;
+}
+
+bool input_non_route_number(const int &route_number, BusRoute &route)
+{
+    char input[MAX_INPUT_SIZE] = "";
+    cout << "type (SMALL, MEDIUM or LARGE): ";
+    cin.getline(input, MAX_INPUT_SIZE);
+    BusType type {};
+    if (!parse_bus_type(type, input))
+    {
+        cout << "Invalid type!\n";
+        return false;
+    }
+    string destination {};
+    cout << "Destination: ";
+    getline(cin, destination);
+    if (destination.empty())
+    {
+        cout << "Empty destination o_O\n";
+        return false;
+    }
+    cout << "Departure (example: 2023-9-22t17-0): ";
+    cin.getline(input, MAX_INPUT_SIZE);
+    DateTime departure {};
+    if (!parse_date_time(departure, input))
+    {
+        cout << "Invalid departure!\n";
+        return false;
+    }
+    cout << "Arrival (example: 2023-9-23t17-0): ";
+    cin.getline(input, MAX_INPUT_SIZE);
+    DateTime arrival {};
+    if (!parse_date_time(arrival, input))
+    {
+        cout << "Invalid arrival!\n";
+        return false;
+    }
+    int ticket_cost_BYN = -1;
+    cout << "Ticket cost (in BYN and integer): ";
+    cin.getline(input, MAX_INPUT_SIZE);
+    if (!parse_int(ticket_cost_BYN, input) || ticket_cost_BYN < 0)
+    {
+        cout << "Invalid ticket cost!\n";
+        return false;
+    }
+    if (ticket_cost_BYN < 0)
+    {
+        cout << "Ticket cost can't be negative!\n";
+        return false;
+    }
+    int n_tickets = -1;
+    cout << "Number of tickets: ";
+    cin.getline(input, MAX_INPUT_SIZE);
+    if (!parse_int(n_tickets, input) || n_tickets < 0)
+    {
+        cout << "Invalid number of tickets!\n";
+        return false;
+    }
+    if (n_tickets < 0)
+    {
+        cout << "Number of tickets can't be negative!\n";
+        return false;
+    }
+    int tickets_left = -1;
+    cout << "Tickets left: ";
+    cin.getline(input, MAX_INPUT_SIZE);
+    if (!parse_int(tickets_left, input) || tickets_left < 0)
+    {
+        cout << "Invalid input!\n";
+        return false;
+    }
+    if (tickets_left < 0)
+    {
+        cout << "Can't be negative!\n";
+        return false;
+    }
+    route = { route_number, type, destination, departure, arrival,
+        ticket_cost_BYN, n_tickets, tickets_left };
+    return true;
 }
