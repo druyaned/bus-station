@@ -12,8 +12,10 @@ Account current_account {};             // current authorized account in the sys
 
 /**
  *  Main function of the program consists of several steps:
- *  (1) {@code preparation}, (2) {@code account enter}, (3) {@code account actions}.
- *  But there is one more step: some definitions in the {@code BusStation
+ *  (0) some definitions,
+ *  (1) preparation,
+ *  (2) account enter,
+ *  (3) account actions.
  *  @param  argc    number of the command line arguments
  *  @param  argv    command line arguments
  *  @return {@code EXIT_SUCCESS} in case of normal program behaviour,
