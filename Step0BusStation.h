@@ -38,35 +38,43 @@ enum BusType { SMALL, MEDIUM, LARGE };
 
 struct DateTime // a simple structure of date and time
 {
+    
     int year = 0;
     int month = 0;
     int day = 0;
     int hour = 0;
     int minute = 0;
+    
     inline string as_string() const
     {
         return to_string(year) + "-" + to_string(month) + "-" + to_string(day) + "t" +
             to_string(hour) + "-" + to_string(minute);
     }
+    
 };
 
 struct Account // USER or an ADMIN
 {
+    
     string login {}; // uniq identifier
     AccountType type {};
     string password {};
+    
     inline bool operator== (const Account &acc) const
     {
         return login == acc.login;
     }
+    
     inline bool operator< (const Account &acc) const
     {
         return login < acc.login;
     }
+    
     inline bool operator<= (const Account &acc) const
     {
         return login <= acc.login;
     }
+    
     inline string as_string() const
     {
         return string("[login=") + login + ", type=" +
@@ -74,9 +82,12 @@ struct Account // USER or an ADMIN
              (type == AccountType::ADMIN ? "ADMIN" : "")) +
             ", password=" + password + "]";
     }
+    
 };
 
-struct BusRoute { // bus route structure according to the task
+struct BusRoute // bus route structure according to the task
+{
+    
     int route_number = 0;       // uniq identifier
     BusType type {};
     string destination {};
@@ -85,18 +96,22 @@ struct BusRoute { // bus route structure according to the task
     int ticket_cost_BYN = 0;    // in Belarusian rubles
     int n_tickets = 0;
     int tickets_left = 0;
+    
     inline bool operator== (const BusRoute &acc) const
     {
         return route_number == acc.route_number;
     }
+    
     inline bool operator< (const BusRoute &acc) const
     {
         return route_number < acc.route_number;
     }
+    
     inline bool operator<= (const BusRoute &acc) const
     {
         return route_number <= acc.route_number;
     }
+    
     inline string as_string() const
     {
         return "[route_number=" + to_string(route_number) + ", type=" +
@@ -109,6 +124,7 @@ struct BusRoute { // bus route structure according to the task
                 ", n_tickets=" + to_string(n_tickets) +
                 ", tickets_left=" + to_string(tickets_left) + "]";
     }
+    
 };
 
 //-FUNCTIONS----------------------------------------------------------------------------------------

@@ -39,14 +39,20 @@ bool define_structure_type(StructureType &st)
     return true;
 }
 
-inline int by_type(const Account &a1, const Account &a2) { return a1.type - a2.type; }
+inline int by_type(const Account &a1, const Account &a2)
+{
+    return a1.type - a2.type;
+}
 
 inline int by_pass(const Account &a1, const Account &a2)
 {
     return a1.password < a2.password ? -1 : (a1.password == a2.password ? 0 : 1);
 }
 
-inline int by_type(const BusRoute &r1, const BusRoute &r2) { return r1.type - r2.type; }
+inline int by_type(const BusRoute &r1, const BusRoute &r2)
+{
+    return r1.type - r2.type;
+}
 
 inline int by_destination(const BusRoute &r1, const BusRoute &r2)
 {

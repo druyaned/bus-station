@@ -242,7 +242,44 @@ bool write_route_to_file(const BusRoute &route)
     return true;
 }
 
-//-OTHER-FUNCTIONS----------------------------------------------------------------------------------
+//-SHOWERS------------------------------------------------------------------------------------------
+
+void show_accounts()
+{
+    puts("Accounts:");
+    puts("              login|   type|           password");
+    puts("-------------------+-------+-------------------");
+    for (int i = 0; i < n_accounts; ++i)
+    {
+        printf("%19s|%7s|%19s\n",
+               accounts[i].login.c_str(),
+               account_type_as_string(accounts[i].type).c_str(),
+               accounts[i].password.c_str());
+    }
+    printf("Number of accounts: %d\n", n_accounts);
+}
+
+void show_routes()
+{
+    puts("Bus Routes:");
+    puts("number|  type|         destination|       departure|         arrival|cost|tickets|left");
+    puts("------+------+--------------------+----------------+----------------+----+-------+----");
+    for (int i = 0; i < n_routes; ++i)
+    {
+        printf("%6d|%6s|%20s|%16s|%16s|%4d|%7d|%4d\n",
+               routes[i].route_number,
+               bus_type_as_string(routes[i].type).c_str(),
+               routes[i].destination.c_str(),
+               routes[i].departure.as_string().c_str(),
+               routes[i].arrival.as_string().c_str(),
+               routes[i].ticket_cost_BYN,
+               routes[i].n_tickets,
+               routes[i].tickets_left);
+    }
+    printf("Number of routes: %d\n", n_routes);
+}
+
+//-INPUT-FUNCTIONS----------------------------------------------------------------------------------
 
 int make_choice(const char &from, const char &to, const string &prompt_menu)
 {

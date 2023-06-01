@@ -155,41 +155,58 @@ bool write_route_to_file(const BusRoute &route);
 //-SHOWERS------------------------------------------------------------------------------------------
 
 /** Iterably prints each element of the {@code accounts} to the system-out. */
-inline void show_accounts()
-{
-    puts("Accounts:");
-    puts("              login|   type|           password");
-    puts("-------------------+-------+-------------------");
-    for (int i = 0; i < n_accounts; ++i)
-    {
-        printf("%19s|%7s|%19s\n",
-               accounts[i].login.c_str(),
-               account_type_as_string(accounts[i].type).c_str(),
-               accounts[i].password.c_str());
-    }
-    printf("Number of accounts: %d\n", n_accounts);
-}
+void show_accounts();
 
 /** Iterably prints each element of the {@code routes} to the system-out. */
-inline void show_routes()
-{
-    puts("Bus Routes:");
-    puts("number|  type|         destination|       departure|         arrival|cost|tickets|left");
-    puts("------+------+--------------------+----------------+----------------+----+-------+----");
-    for (int i = 0; i < n_routes; ++i)
-    {
-        printf("%6d|%6s|%20s|%16s|%16s|%4d|%7d|%4d\n",
-               routes[i].route_number,
-               bus_type_as_string(routes[i].type).c_str(),
-               routes[i].destination.c_str(),
-               routes[i].departure.as_string().c_str(),
-               routes[i].arrival.as_string().c_str(),
-               routes[i].ticket_cost_BYN,
-               routes[i].n_tickets,
-               routes[i].tickets_left);
-    }
-    printf("Number of routes: %d\n", n_routes);
-}
+void show_routes();
+
+//-INPUT-FUNCTIONS----------------------------------------------------------------------------------
+
+/**
+ *  Requests an input
+ *  to return a digit choice in the range [{@code from}, {@code to}]
+ *  according to the {@code prompt_menu}
+ *  or {@code -1} if the choice making fails.
+ *  @param  from    a digit representing the first menu item
+ *  @param  to  a digit representing the last menu item
+ *  @return a digit choice in the range [{@code from}, {@code to}] according to
+ *          the {@code prompt_menu} or {@code -1} if the {@code cin} fails
+ */
+int make_choice(const char &from, const char &to, const string &prompt_menu);
+
+/**
+ *  Requests a login input with searching it in the {@code accounts}.
+ *  @param  login   to be filled by the inputted instance
+ *  @return {@code EMPTY}, {@code NOT_FOUND}
+ *          or the {@code found index} in the {@code accounts}
+ */
+int input_login(string &login);
+
+/**
+ *  Requests a route number input with searching it in the {@code routes}.
+ *  @param  route_number    to be filled by the inputted value
+ *  @return {@code EMPTY}, {@code NOT_POSITIVE}, {@code NOT_FOUND}
+ *          or the {@code found index} in the {@code routes}
+ */
+int input_route_number(int &route_number);
+
+/**
+ *  Requests an input of all other fields of the {@code Account}
+ *  with printing invalid input messages.
+ *  @param  login   identifier of the {@code account}
+ *  @param  account to be filled by the inputted data
+ *  @return {@code true} if the account is filled, otherwise {@code false}
+ */
+bool input_non_login(const string &login, Account &account);
+
+/**
+ *  Requests an input of all other fields of the {@code BusRoute}
+ *  with printing invalid input messages.
+ *  @param  route_number    identifier of the {@code route}
+ *  @param  route   to be filled by the inputted data
+ *  @return {@code true} if the route is filled, otherwise {@code false}
+ */
+bool input_non_route_number(const int &route_number, BusRoute &route);
 
 //-ALGORITHMS---------------------------------------------------------------------------------------
 
@@ -344,53 +361,5 @@ template<typename T> void quick_sort(T arr[], int fst_ind, int lst_ind,
     quick_sort(arr, fst_ind, pivot_ind - 1, compare); // sort left part
     quick_sort(arr, pivot_ind + 1, lst_ind, compare); // sort right part
 }
-
-//-INPUT-FUNCTIONS----------------------------------------------------------------------------------
-
-/**
- *  Requests an input
- *  to return a digit choice in the range [{@code from}, {@code to}]
- *  according to the {@code prompt_menu}
- *  or {@code -1} if the choice making fails.
- *  @param  from    a digit representing the first menu item
- *  @param  to  a digit representing the last menu item
- *  @return a digit choice in the range [{@code from}, {@code to}] according to
- *          the {@code prompt_menu} or {@code -1} if the {@code cin} fails
- */
-int make_choice(const char &from, const char &to, const string &prompt_menu);
-
-/**
- *  Requests a login input with searching it in the {@code accounts}.
- *  @param  login   to be filled by the inputted instance
- *  @return {@code EMPTY}, {@code NOT_FOUND}
- *          or the {@code found index} in the {@code accounts}
- */
-int input_login(string &login);
-
-/**
- *  Requests a route number input with searching it in the {@code routes}.
- *  @param  route_number    to be filled by the inputted value
- *  @return {@code EMPTY}, {@code NOT_POSITIVE}, {@code NOT_FOUND}
- *          or the {@code found index} in the {@code routes}
- */
-int input_route_number(int &route_number);
-
-/**
- *  Requests an input of all other fields of the {@code Account}
- *  with printing invalid input messages.
- *  @param  login   identifier of the {@code account}
- *  @param  account to be filled by the inputted data
- *  @return {@code true} if the account is filled, otherwise {@code false}
- */
-bool input_non_login(const string &login, Account &account);
-
-/**
- *  Requests an input of all other fields of the {@code BusRoute}
- *  with printing invalid input messages.
- *  @param  route_number    identifier of the {@code route}
- *  @param  route   to be filled by the inputted data
- *  @return {@code true} if the route is filled, otherwise {@code false}
- */
-bool input_non_route_number(const int &route_number, BusRoute &route);
 
 #endif /* Utils_h */
