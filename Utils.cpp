@@ -4,16 +4,16 @@
 
 /**
  *  An auxiliary function for some parsers;
- *  fills the {@code buffer} with the content of the {@code line}
- *  starting from the {@code line_index} and ending with
- *  the {@code '\0'} (including) or the {@code delimiter} (excluding);
- *  also skips the {@code delimiter} by incrementing the {@code line_ind} if needed.
+ *  fills the buffer with the content of the line
+ *  starting from the line_index and ending with
+ *  the '\0' (including) or the delimiter (excluding);
+ *  also skips the delimiter by incrementing the line_ind if needed.
  *  @param  buffer a buffer to fill
- *  @param  line a line with a content to fill the {@code buffer}
- *  @param  line_ind an index of the {@code line} to start the filling;
+ *  @param  line a line with a content to fill the buffer
+ *  @param  line_ind an index of the line to start the filling;
  *          will be set after the delimiter or the last filled character
  *  @param  delimiter a character to stop the filling which will be skipped
- *  @return false if the {@code buffer} is empty, otherwise true
+ *  @return false if the buffer is empty, otherwise true
  */
 bool fill_buffer(char *buffer, const char *line, int &line_ind, const char &delimiter)
 {
@@ -30,13 +30,13 @@ bool fill_buffer(char *buffer, const char *line, int &line_ind, const char &deli
 
 /**
  *  An auxiliary function for some parsers;
- *  fills the {@code buffer} with the content of the {@code line}
- *  starting from the {@code line_index} and ending with the {@code '\0'} (including).
+ *  fills the buffer with the content of the line
+ *  starting from the line_index and ending with the '\0' (including).
  *  @param  buffer a buffer to fill
- *  @param  line a line with a content to fill the {@code buffer}
- *  @param  line_ind an index of the {@code line} to start the filling;
+ *  @param  line a line with a content to fill the buffer
+ *  @param  line_ind an index of the line to start the filling;
  *          will be set after the last filled character
- *  @return false if the {@code buffer} is empty, otherwise true
+ *  @return false if the buffer is empty, otherwise true
  */
 bool fill_buffer(char *buffer, const char *line, int &line_ind)
 {

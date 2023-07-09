@@ -4,6 +4,7 @@
 #include "Step1Preparation.h"
 #include "Step2AccountEnter.h"
 #include "Step3AccountActions.h" // includes "BusStation.h"
+#include <utility>
 
 extern Account accounts[MAX_N_ACCOUNTS];
 extern int n_accounts;
@@ -12,29 +13,29 @@ extern int n_routes;
 
 //-CONSTANTS----------------------------------------------------------------------------------------
 
-const int EMPTY = -3;
-const int NOT_POSITIVE = -2;
-const int NOT_FOUND = -1;
+int const EMPTY = -3;
+int const NOT_POSITIVE = -2;
+int const NOT_FOUND = -1;
 
 //-STRING-REPRESENTATIONS---------------------------------------------------------------------------
 
 /**
- *  Returns a string representation of the {@code type} or an empty line ("").
+ *  Returns a string representation of the type or an empty line ("").
  *  @param  type    to represent
- *  @return a string representation of the {@code type} or an empty line ("")
+ *  @return a string representation of the type or an empty line ("")
  */
-inline string account_type_as_string(const AccountType &type)
+inline string account_type_as_string(AccountType const& type)
 {
     return type == AccountType::USER ? "USER" :
         (type == AccountType::ADMIN ? "ADMIN" : "");
 }
 
 /**
- *  Returns a string representation of the {@code type} or an empty line ("").
+ *  Returns a string representation of the type or an empty line ("").
  *  @param  type    to represent
- *  @return a string representation of the {@code type} or an empty line ("")
+ *  @return a string representation of the type or an empty line ("")
  */
-inline string bus_type_as_string(const BusType &type)
+inline string bus_type_as_string(BusType const& type)
 {
     return type == BusType::SMALL ? "SMALL" :
         (type == BusType::MEDIUM ? "MEDIUM" :
@@ -44,74 +45,74 @@ inline string bus_type_as_string(const BusType &type)
 //-PARSERS------------------------------------------------------------------------------------------
 
 /**
- *  Parses the {@code line} to fill the {@code variable}.
+ *  Parses the line to fill the variable.
  *  @param  variable    to be filled
  *  @param  line    to be parsed;
  *          must match the regular expression: "(0)|([+-]?[1-9][0-9]*)"
- *  @return {@code false} if the parsing fails (see {@code line} parameter),
- *          otherwise {@code true} with filling the {@code variable} by the parsed value
+ *  @return false if the parsing fails (see line parameter),
+ *          otherwise true with filling the variable by the parsed value
  */
-bool parse_int(int &variable, const char *line);
+bool parse_int(int& variable, char const* line);
 
 /**
- *  Parses the {@code line} to fill the {@code type}.
+ *  Parses the line to fill the type.
  *  @param  type    to be filled
  *  @param  line    to be parsed;
- *          must be equal to the name of one of the {@code AccountType} variables
- *  @return {@code false} if the parsing fails (see {@code line} parameter),
- *          otherwise {@code true} with filling the {@code type} by the parsed data
+ *          must be equal to the name of one of the AccountType variables
+ *  @return false if the parsing fails (see line parameter),
+ *          otherwise true with filling the type by the parsed data
  */
-bool parse_account_type(AccountType &type, const char *line);
+bool parse_account_type(AccountType& type, char const* line);
 
 /**
- *  Parses the {@code line} to fill the {@code type}.
+ *  Parses the line to fill the type.
  *  @param  type    to be filled
  *  @param  line    to be parsed;
- *          must be equal to the name of one of the {@code BusType} variables
- *  @return {@code false} if the parsing fails (see {@code line} parameter),
- *          otherwise {@code true} with filling the {@code type} by the parsed data
+ *          must be equal to the name of one of the BusType variables
+ *  @return false if the parsing fails (see line parameter),
+ *          otherwise true with filling the type by the parsed data
  */
-bool parse_bus_type(BusType &type, const char *line);
+bool parse_bus_type(BusType& type, char const* line);
 
 /**
- *  Parses the {@code line} to fill the {@code date_time}.
+ *  Parses the line to fill the date_time.
  *  @param  date_time   to be filled
  *  @param  line    to be parsed;
- *          must match the format of the {@code DateTime#as_string} method
- *  @return {@code false} if the parsing fails (see {@code line} parameter),
- *          otherwise {@code true} with filling the {@code date_time} by the parsed data
+ *          must match the format of the DateTime#as_string method
+ *  @return false if the parsing fails (see line parameter),
+ *          otherwise true with filling the date_time by the parsed data
  */
-bool parse_date_time(DateTime &date_time, const char *line);
+bool parse_date_time(DateTime& date_time, char const* line);
 
 /**
- *  Parses the {@code line} to fill the {@code account}.
+ *  Parses the line to fill the account.
  *  @param  account to be filled
  *  @param  line    to be parsed;
- *          must match the format which is set by the {@code write_account_to_file} method
- *  @return {@code false} if the parsing fails (see {@code line} parameter),
- *          otherwise {@code true} with filling the {@code account} by the parsed data
+ *          must match the format which is set by the write_account_to_file method
+ *  @return false if the parsing fails (see line parameter),
+ *          otherwise true with filling the account by the parsed data
  */
-bool parse_account(Account &account, const char *line);
+bool parse_account(Account& account, char const* line);
 
 /**
- *  Parses the {@code line} to fill the {@code route}.
+ *  Parses the line to fill the route.
  *  @param  route   to be filled
  *  @param  line    to be parsed;
- *          must match the format which is set by the {@code write_route_to_file} method
- *  @return {@code false} if the parsing fails (see {@code line} parameter),
- *          otherwise {@code true} with filling the {@code route} by the parsed data
+ *          must match the format which is set by the write_route_to_file method
+ *  @return false if the parsing fails (see line parameter),
+ *          otherwise true with filling the route by the parsed data
  */
-bool parse_route(BusRoute &route, const char *line);
+bool parse_route(BusRoute& route, char const* line);
 
 //-WRITERS------------------------------------------------------------------------------------------
 
 /**
- *  Writes the {@code account} in a .csv friendly format
- *  into the {@code fout}; does NOT change the {@code accounts}.
+ *  Writes the account in a .csv friendly format
+ *  into the fout; does NOT change the accounts.
  *  @param  account to write
  *  @param  fout    to be written
  */
-inline void write_account_to_file(const Account &account, ofstream &fout)
+inline void write_account_to_file(Account const& account, ofstream& fout)
 {
     fout << account.login << DELIMITER
         << account_type_as_string(account.type) << DELIMITER
@@ -119,20 +120,20 @@ inline void write_account_to_file(const Account &account, ofstream &fout)
 }
 
 /**
- *  Writes the {@code account} in a .csv friendly format
- *  into the {@code FILE_OF_ACCOUNTS}; does NOT change the {@code accounts}.
+ *  Writes the account in a .csv friendly format
+ *  into the FILE_OF_ACCOUNTS; does NOT change the accounts.
  *  @param  account to write
- *  @return {@code false} if an I/O error occurs, otherwise {@code true}
+ *  @return false if an I/O error occurs, otherwise true
  */
-bool write_account_to_file(const Account &account);
+bool write_account_to_file(Account const& account);
 
 /**
- *  Writes the {@code route} in a .csv friendly format
- *  into the {@code fout}; does NOT change the {@code routes}.
+ *  Writes the route in a .csv friendly format
+ *  into the fout; does NOT change the routes.
  *  @param  route   to write
  *  @param  fout    to be written
  */
-inline void write_route_to_file(const BusRoute &route, ofstream &fout)
+inline void write_route_to_file(BusRoute const& route, ofstream& fout)
 {
     fout << route.route_number << DELIMITER
         << bus_type_as_string(route.type) << DELIMITER
@@ -145,68 +146,68 @@ inline void write_route_to_file(const BusRoute &route, ofstream &fout)
 }
 
 /**
- *  Writes the {@code route} in a .csv friendly format
- *  into the {@code FILE_OF_ROUTES}; does NOT change the {@code routes}.
+ *  Writes the route in a .csv friendly format
+ *  into the FILE_OF_ROUTES; does NOT change the routes.
  *  @param  route   to write
- *  @return {@code false} if an I/O error occurs, otherwise {@code true}
+ *  @return false if an I/O error occurs, otherwise true
  */
-bool write_route_to_file(const BusRoute &route);
+bool write_route_to_file(BusRoute const& route);
 
 //-SHOWERS------------------------------------------------------------------------------------------
 
-/** Iterably prints each element of the {@code accounts} to the system-out. */
+/** Iterably prints each element of the accounts to the system-out. */
 void show_accounts();
 
-/** Iterably prints each element of the {@code routes} to the system-out. */
+/** Iterably prints each element of the routes to the system-out. */
 void show_routes();
 
 //-INPUT-FUNCTIONS----------------------------------------------------------------------------------
 
 /**
  *  Requests an input
- *  to return a digit choice in the range [{@code from}, {@code to}]
- *  according to the {@code prompt_menu}
- *  or {@code -1} if the choice making fails.
+ *  to return a digit choice in the range [from, to]
+ *  according to the prompt_menu
+ *  or -1 if the choice making fails.
  *  @param  from    a digit representing the first menu item
  *  @param  to  a digit representing the last menu item
- *  @return a digit choice in the range [{@code from}, {@code to}] according to
- *          the {@code prompt_menu} or {@code -1} if the {@code cin} fails
+ *  @return a digit choice in the range [from, to] according to
+ *          the prompt_menu or -1 if the cin fails
  */
-int make_choice(const char &from, const char &to, const string &prompt_menu);
+int make_choice(char const& from, char const& to, string const& prompt_menu);
 
 /**
- *  Requests a login input with searching it in the {@code accounts}.
+ *  Requests a login input with searching it in the accounts.
  *  @param  login   to be filled by the inputted instance
- *  @return {@code EMPTY}, {@code NOT_FOUND}
- *          or the {@code found index} in the {@code accounts}
+ *  @return EMPTY, NOT_FOUND
+ *          or the foundindex} in the accounts
  */
-int input_login(string &login);
+int input_login(string& login);
 
 /**
- *  Requests a route number input with searching it in the {@code routes}.
+ *  Requests a route number input with searching it in the routes.
  *  @param  route_number    to be filled by the inputted value
- *  @return {@code EMPTY}, {@code NOT_POSITIVE}, {@code NOT_FOUND}
- *          or the {@code found index} in the {@code routes}
+ *  @return EMPTY, NOT_POSITIVE, NOT_FOUND
+ *          or the foundindex} in the routes
  */
-int input_route_number(int &route_number);
+int input_route_number(int& route_number);
 
 /**
- *  Requests an input of all other fields of the {@code Account}
+ *  Requests an input of all other fields of the Account
  *  with printing invalid input messages.
- *  @param  login   identifier of the {@code account}
+ *  @param  login   identifier of the account
  *  @param  account to be filled by the inputted data
- *  @return {@code true} if the account is filled, otherwise {@code false}
+ *  @return true if the account is filled, otherwise false
  */
-bool input_non_login(const string &login, Account &account);
+bool input_non_login(string const& login, Account& account);
 
 /**
- *  Requests an input of all other fields of the {@code BusRoute}
+ *  Requests an input of all other fields of the BusRoute
  *  with printing invalid input messages.
- *  @param  route_number    identifier of the {@code route}
+ *  @param  route_number    identifier of the route
  *  @param  route   to be filled by the inputted data
- *  @return {@code true} if the route is filled, otherwise {@code false}
+ *  @return true if the route is filled, otherwise false
  */
-bool input_non_route_number(const int &route_number, BusRoute &route);
+bool input_non_route_number(const int& route_number, BusRoute& route);
 
 //-ALGORITHMS---------------------------------------------------------------------------------------
 
@@ -219,10 +220,10 @@ bool input_non_route_number(const int &route_number, BusRoute &route);
  *  @param  key value of an element to look for
  *  @param  fst_ind   first index of the array for the searching
  *  @param  lst_ind   last index of the array for the searching
- *  @return an index of the found element in the {@code sorted_arr}
- *          or {@code -1} if it hasn't been found.
+ *  @return an index of the found element in the sorted_arr
+ *          or -1 if it hasn't been found.
  */
-template<typename T> int bin_search(T sorted_arr[], const T &key, int fst_ind, int lst_ind)
+template<typename T> int bin_search(T sorted_arr[], T const& key, int fst_ind, int lst_ind)
 {
     int medium;
     while (fst_ind <= lst_ind)
@@ -239,50 +240,15 @@ template<typename T> int bin_search(T sorted_arr[], const T &key, int fst_ind, i
 }
 
 /**
- *  An auxiliary function for the {@code partition}; simply swaps 2 elements.
- *  @param  el1 first element to be swapped
- *  @param  el2 second element to be swapped
+ *  Exchanges the given values.
+ *  @param  el1 first element to exchange
+ *  @param  el2 second element to exchange
  */
-template<typename T> inline void swap_elems(T &el1, T&el2)
+template<typename T> void swap_elems(T& el1, T& el2)
 {
-    T temp = el1;
+    T buf = el1;
     el1 = el2;
-    el2 = temp;
-}
-
-/**
- *  An auxiliary function for the {@code quick_sort};
- *  returns the exact position of the swapped pivot-element;
- *  also swaps smaller or equal elements into the back
- *  and bigger elements into the beginning.
- *  @param  arr array to be sorted
- *  @param  fst_ind first index of the {@code arr} to apply the partition
- *  @param  lst_ind last index of the {@code arr} to apply the partition
- *  @return the exact position of the swapped pivot-element;
- *          also swaps smaller or equal elements into the back
- *          and bigger elements into the beginning.
- */
-template<typename T> int partition(T arr[], int fst_ind, int lst_ind)
-{
-    T pivot = arr[fst_ind];
-    int count = 0; // count of smaller or equal elements
-    for (int i = fst_ind + 1; i <= lst_ind; ++i)
-    {
-        if (arr[i] <= pivot)
-            ++count;
-    }
-    int pivot_ind = fst_ind + count;
-    swap_elems(arr[fst_ind], arr[pivot_ind]);
-    for (int low = fst_ind, high = lst_ind; low < pivot_ind && pivot_ind < high;)
-    {
-        while (arr[low] <= pivot)
-            ++low;
-        while (pivot < arr[high])
-            --high;
-        if (low < pivot_ind && pivot_ind < high)
-            swap_elems(arr[low++], arr[high--]);
-    }
-    return pivot_ind;
+    el2 = buf;
 }
 
 /**
@@ -291,34 +257,17 @@ template<typename T> int partition(T arr[], int fst_ind, int lst_ind)
  *  quicksort algorithm
  *  </a>.
  *  @param  arr  array to be sorted
- *  @param  fst_ind first index of the {@code arr} to apply the sorting
- *  @param  lst_ind last index of the {@code arr} to apply the sorting
+ *  @param  fst_ind first index of the arr to apply the sorting
+ *  @param  lst_ind last index of the arr to apply the sorting
+ *  @param  compare comparator to compare 2 elements of the arr
  */
-template<typename T> void quick_sort(T arr[], int fst_ind, int lst_ind)
+template<typename T> void quick_sort(T arr[], int fst_ind, int lst_ind,
+    int (*compare)(T const& o1, T const& o2) =
+        [](T const& o1, T const& o2) {return o1 < o2 ? -1 : (o1 == o2 ? 0 : 1);})
 {
     if (lst_ind <= fst_ind)
         return;
-    int pivot_ind = partition(arr, fst_ind, lst_ind);
-    quick_sort(arr, fst_ind, pivot_ind - 1); // sort left part
-    quick_sort(arr, pivot_ind + 1, lst_ind); // sort right part
-}
-
-/**
- *  An auxiliary function for the {@code quick_sort};
- *  returns the exact position of the swapped pivot-element;
- *  also swaps smaller or equal elements into the back
- *  and bigger elements into the beginning.
- *  @param  arr array to be sorted
- *  @param  fst_ind first index of the {@code arr} to apply the partition
- *  @param  lst_ind last index of the {@code arr} to apply the partition
- *  @param  compare comparator to compare 2 elements of the {@code arr}
- *  @return the exact position of the swapped pivot-element;
- *          also swaps smaller or equal elements into the back
- *          and bigger elements into the beginning.
- */
-template<typename T> int partition(T arr[], int fst_ind, int lst_ind,
-                                   int (*compare)(const T &, const T &))
-{
+    // partition
     T pivot = arr[fst_ind];
     int count = 0; // count of smaller or equal elements
     for (int i = fst_ind + 1; i <= lst_ind; ++i)
@@ -339,25 +288,7 @@ template<typename T> int partition(T arr[], int fst_ind, int lst_ind,
         if (low < pivot_ind && pivot_ind < high)
             swap_elems(arr[low++], arr[high--]);
     }
-    return pivot_ind;
-}
-
-/**
- *  An implementation of the
- *  <a href="https://en.wikipedia.org/wiki/Quicksort">
- *  quicksort algorithm
- *  </a>.
- *  @param  arr  array to be sorted
- *  @param  fst_ind first index of the {@code arr} to apply the sorting
- *  @param  lst_ind last index of the {@code arr} to apply the sorting
- *  @param  compare comparator to compare 2 elements of the {@code arr}
- */
-template<typename T> void quick_sort(T arr[], int fst_ind, int lst_ind,
-                                     int (*compare)(const T &, const T &))
-{
-    if (lst_ind <= fst_ind)
-        return;
-    int pivot_ind = partition(arr, fst_ind, lst_ind, compare);
+    // sort parts
     quick_sort(arr, fst_ind, pivot_ind - 1, compare); // sort left part
     quick_sort(arr, pivot_ind + 1, lst_ind, compare); // sort right part
 }

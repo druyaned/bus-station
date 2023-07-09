@@ -131,25 +131,25 @@ struct BusRoute // bus route structure according to the task
 
 /**
  *  Step#1 of the program to read or generate
- *  the {@code accounts} and the {@code routes}.
- *  @return {@code false} if an I/O error occurs, otherwise {@code true}
+ *  the accounts and the routes.
+ *  @return false if an I/O error occurs, otherwise true
  */
 bool preparation();
 
 /**
- *  Step#2 of the program to define the {@code current_account};
+ *  Step#2 of the program to define the current_account};
  *  provides registering or authorizing of an account.
  *  @param  quit    an indicator to stop the program
- *  @return {@code false} if an I/O error occurs, otherwise {@code true}
+ *  @return false if an I/O error occurs, otherwise true
  */
 bool account_enter(bool &quit);
 
 /**
  *  Step#3 of the program to perform account acctions
- *  by a loop until the {@code quit} indicator is not true;
+ *  by a loop until the quit indicator is not true;
  *  USER-AND-ADMIN-ACTOINS: view, search, sort;
  *  ADMIN-ONLY-ACTIONS: add, edit, remove.
- *  @return {@code false} if an I/O error occurs, otherwise {@code true}
+ *  @return false if an I/O error occurs, otherwise true
  */
 bool account_actions();
 

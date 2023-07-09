@@ -18,8 +18,8 @@ Account current_account {};             // current authorized account in the sys
  *  (3) account actions.
  *  @param  argc    number of the command line arguments
  *  @param  argv    command line arguments
- *  @return {@code EXIT_SUCCESS} in case of normal program behaviour,
- *          otherwise other int value (e.g. {@code EXIT_FAILURE})
+ *  @return EXIT_SUCCESS in case of normal program behaviour,
+ *          otherwise other int value (e.g. EXIT_FAILURE)
  */
 int main(int argc, const char * argv[])
 {

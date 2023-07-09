@@ -39,64 +39,6 @@ bool define_structure_type(StructureType &st)
     return true;
 }
 
-inline int by_type(const Account &a1, const Account &a2)
-{
-    return a1.type - a2.type;
-}
-
-inline int by_pass(const Account &a1, const Account &a2)
-{
-    return a1.password < a2.password ? -1 : (a1.password == a2.password ? 0 : 1);
-}
-
-inline int by_type(const BusRoute &r1, const BusRoute &r2)
-{
-    return r1.type - r2.type;
-}
-
-inline int by_destination(const BusRoute &r1, const BusRoute &r2)
-{
-    return r1.destination < r2.destination ? -1 :
-        (r1.destination == r2.destination ? 0 : 1);
-}
-
-int by_departure(const BusRoute &r1, const BusRoute &r2)
-{
-    DateTime dt1 = r1.departure;
-    DateTime dt2 = r2.departure;
-    ll m1 = dt1.year * MINUTES_IN_YEAR + dt1.month * MINUTES_IN_MONTH +
-        dt1.day * MINUTES_IN_DAY + dt1.hour * MINUTES_IN_HOUR + dt1.minute;
-    ll m2 = dt2.year * MINUTES_IN_YEAR + dt2.month * MINUTES_IN_MONTH +
-        dt2.day * MINUTES_IN_DAY + dt2.hour * MINUTES_IN_HOUR + dt2.minute;
-    return m1 < m2 ? -1 : (m1 == m2 ? 0 : 1);
-}
-
-int by_arrival(const BusRoute &r1, const BusRoute &r2)
-{
-    DateTime dt1 = r1.arrival;
-    DateTime dt2 = r2.arrival;
-    ll m1 = dt1.year * MINUTES_IN_YEAR + dt1.month * MINUTES_IN_MONTH +
-        dt1.day * MINUTES_IN_DAY + dt1.hour * MINUTES_IN_HOUR + dt1.minute;
-    ll m2 = dt2.year * MINUTES_IN_YEAR + dt2.month * MINUTES_IN_MONTH +
-        dt2.day * MINUTES_IN_DAY + dt2.hour * MINUTES_IN_HOUR + dt2.minute;
-    return m1 < m2 ? -1 : (m1 == m2 ? 0 : 1);
-}
-
-inline int by_ticket_cost_BYN(const BusRoute &r1, const BusRoute &r2)
-{
-    return r1.ticket_cost_BYN - r2.ticket_cost_BYN;
-}
-
-inline int by_n_tickets(const BusRoute &r1, const BusRoute &r2)
-{
-    return r1.n_tickets - r2.n_tickets;
-}
-
-inline int by_tickets_left(const BusRoute &r1, const BusRoute &r2)
-{
-    return r1.tickets_left - r2.tickets_left;
-}
-
 //-MENUS--------------------------------------------------------------------------------------------
 
 bool user_actions(bool &quit)
@@ -194,8 +136,67 @@ void search(const StructureType &struct_type)
     }
 }
 
+// sort
 bool sort(const StructureType &struct_type)
 {
+    static int (*accounts_by_type)(const Account &a1, const Account &a2) =
+        [](const Account &a1, const Account &a2)
+        {
+            return a1.type - a2.type;
+        };
+    static int (*by_pass)(const Account &a1, const Account &a2) =
+        [](const Account &a1, const Account &a2)
+        {
+            return a1.password < a2.password ? -1 : (a1.password == a2.password ? 0 : 1);
+        };
+    static int (*routes_by_type)(const BusRoute &r1, const BusRoute &r2) =
+        [](const BusRoute &r1, const BusRoute &r2)
+        {
+            return r1.type - r2.type;
+        };
+    static int (*by_destination)(const BusRoute &r1, const BusRoute &r2) =
+        [](const BusRoute &r1, const BusRoute &r2)
+        {
+            return r1.destination < r2.destination ? -1 :
+                (r1.destination == r2.destination ? 0 : 1);
+        };
+    static int (*by_departure)(const BusRoute &r1, const BusRoute &r2) =
+        [](const BusRoute &r1, const BusRoute &r2)
+        {
+            DateTime dt1 = r1.departure;
+            DateTime dt2 = r2.departure;
+            ll m1 = dt1.year * MINUTES_IN_YEAR + dt1.month * MINUTES_IN_MONTH +
+                dt1.day * MINUTES_IN_DAY + dt1.hour * MINUTES_IN_HOUR + dt1.minute;
+            ll m2 = dt2.year * MINUTES_IN_YEAR + dt2.month * MINUTES_IN_MONTH +
+                dt2.day * MINUTES_IN_DAY + dt2.hour * MINUTES_IN_HOUR + dt2.minute;
+            return m1 < m2 ? -1 : (m1 == m2 ? 0 : 1);
+        };
+    static int (*by_arrival)(const BusRoute &r1, const BusRoute &r2) =
+        [](const BusRoute &r1, const BusRoute &r2)
+        {
+            DateTime dt1 = r1.arrival;
+            DateTime dt2 = r2.arrival;
+            ll m1 = dt1.year * MINUTES_IN_YEAR + dt1.month * MINUTES_IN_MONTH +
+                dt1.day * MINUTES_IN_DAY + dt1.hour * MINUTES_IN_HOUR + dt1.minute;
+            ll m2 = dt2.year * MINUTES_IN_YEAR + dt2.month * MINUTES_IN_MONTH +
+                dt2.day * MINUTES_IN_DAY + dt2.hour * MINUTES_IN_HOUR + dt2.minute;
+            return m1 < m2 ? -1 : (m1 == m2 ? 0 : 1);
+        };
+    static int (*by_ticket_cost_BYN)(const BusRoute &r1, const BusRoute &r2) =
+        [](const BusRoute &r1, const BusRoute &r2)
+        {
+            return r1.ticket_cost_BYN - r2.ticket_cost_BYN;
+        };
+    static int (*by_n_tickets)(const BusRoute &r1, const BusRoute &r2) =
+        [](const BusRoute &r1, const BusRoute &r2)
+        {
+            return r1.n_tickets - r2.n_tickets;
+        };
+    static int (*by_tickets_left)(const BusRoute &r1, const BusRoute &r2) =
+        [](const BusRoute &r1, const BusRoute &r2)
+        {
+            return r1.tickets_left - r2.tickets_left;
+        };
     if (struct_type == ACCOUNTS)
     {
         string sort_menu = "\n[SORT-ACCOUNTS-MENU]:"
@@ -214,7 +215,7 @@ bool sort(const StructureType &struct_type)
                 return true;
             case 2:
                 cout << "Sorting by type...\n";
-                quick_sort(accounts, 0, n_accounts - 1, by_type);
+                quick_sort(accounts, 0, n_accounts - 1, accounts_by_type);
                 cout << "Successfully sorted!\n";
                 if (!write_accounts())
                     return false;
@@ -253,7 +254,7 @@ bool sort(const StructureType &struct_type)
                 return true;
             case 2:
                 cout << "Sorting by type...\n";
-                quick_sort(routes, 0, n_routes-1, by_type);
+                quick_sort(routes, 0, n_routes-1, routes_by_type);
                 cout << "Successfully sorted!\n";
                 if (!write_routes())
                     return false;
